@@ -1,7 +1,6 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Person, formatNumber, platforms } from '@/data/people';
-import { ChevronRight, Instagram, Twitter, Youtube, Facebook, Tiktok } from 'lucide-react';
+import { ChevronRight, Instagram, Twitter, Youtube, Facebook } from 'lucide-react';
 
 interface PersonCardProps {
   person: Person;
@@ -48,7 +47,7 @@ const PersonCard = ({ person, index }: PersonCardProps) => {
       case 'facebook':
         return <Facebook className="w-5 h-5" />;
       case 'tiktok':
-        return <Tiktok className="w-5 h-5" />;
+        return <span className="text-xs">TT</span>;
       default:
         return null;
     }
