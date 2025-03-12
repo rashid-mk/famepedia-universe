@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X, Search, LogIn } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +50,31 @@ const Header = () => {
               Search
             </button>
           </div>
+
+          {/* Login Button */}
+          <div className="relative">
+            <button 
+              className="flex items-center space-x-1 px-6 py-2 bg-famepedia-blue text-white rounded-full text-sm font-medium hover:bg-blue-600 transition-all duration-200"
+              onClick={() => setIsAuthOpen(!isAuthOpen)}
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Login</span>
+            </button>
+            
+            {/* Auth Dropdown */}
+            {isAuthOpen && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-50 animate-fadeIn">
+                <div className="py-2">
+                  <a href="/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-famepedia-light-blue hover:text-famepedia-blue transition-colors">
+                    Login
+                  </a>
+                  <a href="/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-famepedia-light-blue hover:text-famepedia-blue transition-colors">
+                    Sign Up
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Mobile menu button */}
@@ -76,6 +102,16 @@ const Header = () => {
                 className="w-full py-3 px-4 bg-gray-100 rounded-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-famepedia-blue transition-all duration-200"
               />
               <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
+            
+            {/* Login and Signup buttons for mobile */}
+            <div className="flex flex-col space-y-2 mt-2">
+              <a href="/login" className="py-3 px-4 bg-famepedia-blue text-white rounded-full text-center font-medium hover:bg-blue-600 transition-all duration-200">
+                Login
+              </a>
+              <a href="/signup" className="py-3 px-4 bg-white border border-famepedia-blue text-famepedia-blue rounded-full text-center font-medium hover:bg-famepedia-light-blue transition-all duration-200">
+                Sign Up
+              </a>
             </div>
           </div>
         </div>
