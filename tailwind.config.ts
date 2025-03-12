@@ -19,6 +19,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['"Google Sans"', '"Product Sans"', 'Roboto', 'Arial', 'sans-serif'],
+        display: ['"Google Sans Display"', '"Product Sans"', 'Roboto', 'Arial', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -63,12 +67,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        google: {
+          blue: "#4285F4",
+          red: "#EA4335",
+          yellow: "#FBBC05",
+          green: "#34A853",
+          gray: "#F8F9FA",
+          "dark-gray": "#202124",
+          "border-gray": "#DADCE0",
+          "hover-gray": "#F1F3F4",
+        },
         famepedia: {
-          blue: "#0ea5e9",
-          "light-blue": "#e0f2fe",
-          gray: "#f8fafc",
-          "dark-gray": "#1e293b",
-          "soft-white": "#f9fafb",
+          blue: "#4285F4",
+          "light-blue": "#E8F0FE",
+          gray: "#F8F9FA",
+          "dark-gray": "#202124",
+          "soft-white": "#FFFFFF",
         },
       },
       borderRadius: {
@@ -115,7 +129,9 @@ export default {
         scale: "scale 10s ease infinite",
       },
       boxShadow: {
-        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+        'glass': '0 4px 6px rgba(60, 64, 67, 0.1)',
+        'google': '0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15)',
+        'google-elevated': '0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15)',
       },
     },
   },
