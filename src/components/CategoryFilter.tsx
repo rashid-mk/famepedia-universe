@@ -3,6 +3,14 @@ import { useState } from 'react';
 import { Category, Platform, Country, Region, categories, platforms, countries, regions } from '@/data/people';
 import { motion } from 'framer-motion';
 import { Filter, Globe, MapPin } from 'lucide-react';
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CategoryFilterProps {
   selectedCategory: Category;
@@ -148,32 +156,54 @@ const CategoryFilter = ({
               <MapPin className="w-4 h-4 mr-2" />
               Countries
             </h3>
-            <div className="flex flex-wrap gap-3">
-              {countries.map((country) => {
-                const isSelected = selectedCountry === country.value;
-                return (
-                  <button
-                    key={country.value}
-                    onClick={() => onCountryChange(country.value)}
-                    className={`category-chip relative overflow-hidden ${
-                      isSelected
-                        ? 'bg-google-red text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="countryHighlight"
-                        className="absolute inset-0 bg-google-red"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    )}
-                    <span className="relative z-10">{country.label}</span>
-                  </button>
-                );
-              })}
+            
+            <div className="relative">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full max-w-5xl"
+              >
+                <CarouselContent>
+                  {countries.map((country) => {
+                    const isSelected = selectedCountry === country.value;
+                    return (
+                      <CarouselItem key={country.value} className="basis-auto">
+                        <button
+                          onClick={() => onCountryChange(country.value)}
+                          className={`category-chip relative overflow-hidden ${
+                            isSelected
+                              ? 'bg-google-red text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {isSelected && (
+                            <motion.span
+                              layoutId="countryHighlight"
+                              className="absolute inset-0 bg-google-red"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          )}
+                          <span className="relative z-10">{country.label}</span>
+                        </button>
+                      </CarouselItem>
+                    );
+                  })}
+                </CarouselContent>
+                <div className="flex justify-end mt-2">
+                  <CarouselPrevious className="relative static left-auto right-auto translate-y-0 mr-2" />
+                  <CarouselNext className="relative static left-auto right-auto translate-y-0" />
+                </div>
+              </Carousel>
+            </div>
+
+            <div className="mt-4">
+              <p className="text-sm text-gray-500">
+                Swipe to see more countries or use the navigation buttons
+              </p>
             </div>
           </div>
         </div>
