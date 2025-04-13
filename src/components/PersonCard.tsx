@@ -1,6 +1,7 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Person, formatNumber, platforms } from '@/data/people';
-import { ChevronRight, Instagram, Twitter, Youtube, Facebook } from 'lucide-react';
+import { ChevronRight, Instagram, Twitter, Youtube, Facebook, MapPin } from 'lucide-react';
 
 interface PersonCardProps {
   person: Person;
@@ -96,6 +97,13 @@ const PersonCard = ({ person, index }: PersonCardProps) => {
             {person.category.charAt(0).toUpperCase() + person.category.slice(1)}
           </span>
           <span className="text-sm text-gray-500">Rank #{index + 1}</span>
+        </div>
+        
+        <div className="flex items-center mb-4 text-sm text-gray-600">
+          <MapPin className="w-3 h-3 mr-1" />
+          <span>{person.country}</span>
+          <span className="mx-1">•</span>
+          <span>{person.region}</span>
         </div>
         
         <p className="text-gray-700 text-sm mb-4 line-clamp-2">{person.description}</p>

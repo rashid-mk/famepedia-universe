@@ -1,21 +1,29 @@
 
 import { useState } from 'react';
-import { Category, Platform, categories, platforms } from '@/data/people';
+import { Category, Platform, Country, Region, categories, platforms, countries, regions } from '@/data/people';
 import { motion } from 'framer-motion';
-import { Filter } from 'lucide-react';
+import { Filter, Globe, MapPin } from 'lucide-react';
 
 interface CategoryFilterProps {
   selectedCategory: Category;
   selectedPlatform: Platform;
+  selectedCountry: Country;
+  selectedRegion: Region;
   onCategoryChange: (category: Category) => void;
   onPlatformChange: (platform: Platform) => void;
+  onCountryChange: (country: Country) => void;
+  onRegionChange: (region: Region) => void;
 }
 
 const CategoryFilter = ({ 
   selectedCategory, 
-  selectedPlatform, 
+  selectedPlatform,
+  selectedCountry,
+  selectedRegion,
   onCategoryChange, 
-  onPlatformChange 
+  onPlatformChange,
+  onCountryChange,
+  onRegionChange
 }: CategoryFilterProps) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
@@ -70,7 +78,7 @@ const CategoryFilter = ({
             </div>
           </div>
 
-          <div>
+          <div className="mb-8">
             <h3 className="text-lg font-medium text-gray-800 mb-4">Platforms</h3>
             <div className="flex flex-wrap gap-3">
               {platforms.map((platform) => {
@@ -95,6 +103,74 @@ const CategoryFilter = ({
                       />
                     )}
                     <span className="relative z-10">{platform.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
+              <Globe className="w-4 h-4 mr-2" />
+              Regions
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {regions.map((region) => {
+                const isSelected = selectedRegion === region.value;
+                return (
+                  <button
+                    key={region.value}
+                    onClick={() => onRegionChange(region.value)}
+                    className={`category-chip relative overflow-hidden ${
+                      isSelected
+                        ? 'bg-google-green text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {isSelected && (
+                      <motion.span
+                        layoutId="regionHighlight"
+                        className="absolute inset-0 bg-google-green"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                    <span className="relative z-10">{region.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
+              <MapPin className="w-4 h-4 mr-2" />
+              Countries
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {countries.map((country) => {
+                const isSelected = selectedCountry === country.value;
+                return (
+                  <button
+                    key={country.value}
+                    onClick={() => onCountryChange(country.value)}
+                    className={`category-chip relative overflow-hidden ${
+                      isSelected
+                        ? 'bg-google-red text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {isSelected && (
+                      <motion.span
+                        layoutId="countryHighlight"
+                        className="absolute inset-0 bg-google-red"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                    <span className="relative z-10">{country.label}</span>
                   </button>
                 );
               })}

@@ -1,15 +1,23 @@
 
 import { useState, useEffect } from 'react';
-import { Person, Category, Platform } from '@/data/people';
+import { Person, Category, Platform, Country, Region } from '@/data/people';
 import PersonCard from './PersonCard';
 
 interface PersonGridProps {
   people: Person[];
   selectedCategory: Category;
   selectedPlatform: Platform;
+  selectedCountry: Country;
+  selectedRegion: Region;
 }
 
-const PersonGrid = ({ people, selectedCategory, selectedPlatform }: PersonGridProps) => {
+const PersonGrid = ({ 
+  people, 
+  selectedCategory, 
+  selectedPlatform,
+  selectedCountry,
+  selectedRegion
+}: PersonGridProps) => {
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,13 +29,15 @@ const PersonGrid = ({ people, selectedCategory, selectedPlatform }: PersonGridPr
       const filtered = people.filter(person => {
         const categoryMatch = selectedCategory === 'all' || person.category === selectedCategory;
         const platformMatch = selectedPlatform === 'all' || person.platform === selectedPlatform;
-        return categoryMatch && platformMatch;
+        const countryMatch = selectedCountry === 'all' || person.country === selectedCountry;
+        const regionMatch = selectedRegion === 'all' || person.region === selectedRegion;
+        return categoryMatch && platformMatch && countryMatch && regionMatch;
       });
       
       setFilteredPeople(filtered);
       setIsLoading(false);
     }, 300);
-  }, [people, selectedCategory, selectedPlatform]);
+  }, [people, selectedCategory, selectedPlatform, selectedCountry, selectedRegion]);
 
   return (
     <section id="people" className="py-16 px-6 bg-famepedia-gray">

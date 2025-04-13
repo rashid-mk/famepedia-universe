@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Category, Platform, people } from '@/data/people';
+import { Category, Platform, Country, Region, people } from '@/data/people';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
@@ -11,6 +11,8 @@ import Footer from '@/components/Footer';
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('all');
+  const [selectedCountry, setSelectedCountry] = useState<Country>('all');
+  const [selectedRegion, setSelectedRegion] = useState<Region>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,6 +30,14 @@ const Index = () => {
 
   const handlePlatformChange = (platform: Platform) => {
     setSelectedPlatform(platform);
+  };
+
+  const handleCountryChange = (country: Country) => {
+    setSelectedCountry(country);
+  };
+
+  const handleRegionChange = (region: Region) => {
+    setSelectedRegion(region);
   };
 
   if (isLoading) {
@@ -68,8 +78,12 @@ const Index = () => {
           <CategoryFilter
             selectedCategory={selectedCategory}
             selectedPlatform={selectedPlatform}
+            selectedCountry={selectedCountry}
+            selectedRegion={selectedRegion}
             onCategoryChange={handleCategoryChange}
             onPlatformChange={handlePlatformChange}
+            onCountryChange={handleCountryChange}
+            onRegionChange={handleRegionChange}
           />
         </motion.div>
         
@@ -82,6 +96,8 @@ const Index = () => {
             people={people}
             selectedCategory={selectedCategory}
             selectedPlatform={selectedPlatform}
+            selectedCountry={selectedCountry}
+            selectedRegion={selectedRegion}
           />
         </motion.div>
         
