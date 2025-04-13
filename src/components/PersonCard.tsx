@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Person, formatNumber, platforms } from '@/data/people';
 import { ChevronRight, Instagram, Twitter, Youtube, Facebook, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PersonCardProps {
   person: Person;
@@ -12,6 +13,7 @@ const PersonCard = ({ person, index }: PersonCardProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -54,16 +56,21 @@ const PersonCard = ({ person, index }: PersonCardProps) => {
     }
   };
 
+  const handleViewProfile = () => {
+    navigate(`/profile/${person.id}`);
+  };
+
   const platformColor = platforms.find(p => p.value === person.platform)?.color || '';
 
   return (
     <div 
       ref={cardRef}
-      className={`glass-card rounded-2xl overflow-hidden transform transition-all duration-500 ${
+      className={`glass-card rounded-2xl overflow-hidden transform transition-all duration-500 cursor-pointer ${
         isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleViewProfile}
     >
       <div className="relative overflow-hidden h-64 w-full">
         <img
@@ -93,7 +100,7 @@ const PersonCard = ({ person, index }: PersonCardProps) => {
       
       <div className="p-5 bg-white/70 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
-          <span className="inline-block category-chip bg-famepedia-light-blue text-famepedia-blue text-xs">
+          <span className="inline-block category-chip bg-google-light-blue text-google-blue text-xs">
             {person.category.charAt(0).toUpperCase() + person.category.slice(1)}
           </span>
           <span className="text-sm text-gray-500">Rank #{index + 1}</span>
@@ -108,7 +115,13 @@ const PersonCard = ({ person, index }: PersonCardProps) => {
         
         <p className="text-gray-700 text-sm mb-4 line-clamp-2">{person.description}</p>
         
-        <button className="flex items-center text-sm font-medium text-famepedia-blue hover:text-blue-700 transition-colors">
+        <button 
+          className="flex items-center text-sm font-medium text-google-blue hover:text-blue-700 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleViewProfile();
+          }}
+        >
           View Profile <ChevronRight className="w-4 h-4 ml-1" />
         </button>
       </div>
