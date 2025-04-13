@@ -1,8 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Search, User } from 'lucide-react';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Search } from 'lucide-react';
 import { Person } from '@/data/people';
 import { useNavigate } from 'react-router-dom';
 
@@ -43,6 +43,7 @@ const SearchDialog = ({ open, onOpenChange, people }: SearchDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 max-w-2xl mx-auto overflow-hidden">
+        <DialogTitle className="sr-only">Search People</DialogTitle>
         <Command className="rounded-lg border shadow-md">
           <CommandInput 
             placeholder="Search famous people..." 
@@ -56,7 +57,7 @@ const SearchDialog = ({ open, onOpenChange, people }: SearchDialogProps) => {
               {searchResults.map(person => (
                 <CommandItem 
                   key={person.id}
-                  onSelect={() => handleSelectPerson(person.id)}
+                  onSelect={() => handleSelectPerson(person.id.toString())}
                   className="flex items-center gap-2 py-3 px-2 cursor-pointer"
                 >
                   <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { people, Person, platforms } from '@/data/people';
@@ -17,7 +16,7 @@ const PersonProfile = () => {
     setIsLoading(true);
     
     setTimeout(() => {
-      const foundPerson = people.find(p => p.id === id);
+      const foundPerson = people.find(p => p.id.toString() === id);
       setPerson(foundPerson || null);
       setIsLoading(false);
     }, 500);
@@ -149,7 +148,6 @@ const PersonProfile = () => {
                 <h2 className="text-xl font-bold mb-4">About</h2>
                 <p className="text-gray-700 leading-relaxed">
                   {person.description}
-                  {/* Adding more content for a better profile page */}
                   {` ${person.name} has garnered a significant following on ${person.platform} 
                   through consistent and engaging content. Known for their expertise in ${person.category}, 
                   they've built a loyal audience primarily from ${person.country} and the surrounding ${person.region} region. 
