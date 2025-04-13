@@ -1,15 +1,28 @@
 
 import { useState } from 'react';
 import { Category, Platform, Country, Region, categories, platforms, countries, regions } from '@/data/people';
+import { Filter, Globe, MapPin, SlidersHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Filter, Globe, MapPin } from 'lucide-react';
 import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious
-} from "@/components/ui/carousel";
+  ToggleGroup,
+  ToggleGroupItem
+} from "@/components/ui/toggle-group";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CategoryFilterProps {
@@ -33,177 +46,216 @@ const CategoryFilter = ({
   onCountryChange,
   onRegionChange
 }: CategoryFilterProps) => {
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'category' | 'platform' | 'region' | 'country' | null>(null);
+
+  // Find the label for each selected value
+  const selectedCategoryLabel = categories.find(c => c.value === selectedCategory)?.label || 'All Categories';
+  const selectedPlatformLabel = platforms.find(p => p.value === selectedPlatform)?.label || 'All Platforms';
+  const selectedCountryLabel = countries.find(c => c.value === selectedCountry)?.label || 'All Countries';
+  const selectedRegionLabel = regions.find(r => r.value === selectedRegion)?.label || 'All Regions';
 
   return (
-    <section id="categories" className="py-12 px-6">
+    <section id="categories" className="py-8 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
           <div>
             <span className="inline-block category-chip bg-famepedia-light-blue text-famepedia-blue mb-2">
               Filter By
             </span>
-            <h2 className="text-3xl font-bold text-gray-900">
-              Explore Different <span className="text-gradient">Categories</span>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Explore <span className="text-gradient">Categories</span>
             </h2>
           </div>
-          
-          <button 
-            className="mt-4 md:mt-0 flex items-center text-sm font-medium text-gray-600 hover:text-famepedia-blue transition-colors md:hidden"
-            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-          >
-            <Filter className="w-4 h-4 mr-2" />
-            {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
-          </button>
+
+          {/* Mobile Filter Button */}
+          <div className="mt-4 md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <button className="flex items-center text-sm font-medium text-gray-600 hover:text-famepedia-blue transition-colors bg-gray-100 px-4 py-2 rounded-lg">
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                </button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[80vh]">
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                  <SheetDescription>
+                    Apply filters to discover influencers
+                  </SheetDescription>
+                </SheetHeader>
+                <ScrollArea className="h-full py-4">
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-800 mb-3">Categories</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {categories.map((category) => (
+                          <button
+                            key={category.value}
+                            onClick={() => onCategoryChange(category.value)}
+                            className={`category-chip ${
+                              selectedCategory === category.value
+                                ? 'bg-famepedia-blue text-white'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {category.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-800 mb-3">Platforms</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {platforms.map((platform) => (
+                          <button
+                            key={platform.value}
+                            onClick={() => onPlatformChange(platform.value)}
+                            className={`category-chip ${
+                              selectedPlatform === platform.value
+                                ? platform.color
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {platform.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-800 mb-3">Regions</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {regions.map((region) => (
+                          <button
+                            key={region.value}
+                            onClick={() => onRegionChange(region.value)}
+                            className={`category-chip ${
+                              selectedRegion === region.value
+                                ? 'bg-google-green text-white'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {region.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-800 mb-3">Countries</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {countries.map((country) => (
+                          <button
+                            key={country.value}
+                            onClick={() => onCountryChange(country.value)}
+                            className={`category-chip ${
+                              selectedCountry === country.value
+                                ? 'bg-google-red text-white'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {country.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </ScrollArea>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
 
-        <div className={`md:block ${isFiltersOpen ? 'block' : 'hidden'}`}>
-          <div className="mb-8">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">Categories</h3>
-            <div className="flex flex-wrap gap-3">
-              {categories.map((category) => (
-                <button
-                  key={category.value}
-                  onClick={() => onCategoryChange(category.value)}
-                  className={`category-chip relative overflow-hidden ${
-                    selectedCategory === category.value
-                      ? 'bg-famepedia-blue text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {selectedCategory === category.value && (
-                    <motion.span
-                      layoutId="categoryHighlight"
-                      className="absolute inset-0 bg-famepedia-blue"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
-                  <span className="relative z-10">{category.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Desktop Filter UI */}
+        <div className="hidden md:block">
+          <div className="bg-gray-50 p-4 rounded-xl shadow-sm">
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Categories Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center px-3 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <span className="text-sm font-medium mr-2">Category:</span>
+                  <span className="text-sm text-gray-700">{selectedCategoryLabel}</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>Select Category</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {categories.map((category) => (
+                    <DropdownMenuItem 
+                      key={category.value}
+                      onClick={() => onCategoryChange(category.value)}
+                      className={selectedCategory === category.value ? "bg-gray-100" : ""}
+                    >
+                      {category.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-          <div className="mb-8">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">Platforms</h3>
-            <div className="flex flex-wrap gap-3">
-              {platforms.map((platform) => {
-                const isSelected = selectedPlatform === platform.value;
-                return (
-                  <button
-                    key={platform.value}
-                    onClick={() => onPlatformChange(platform.value)}
-                    className={`category-chip relative overflow-hidden ${
-                      isSelected
-                        ? platform.color
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="platformHighlight"
-                        className={`absolute inset-0 ${platform.color}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    )}
-                    <span className="relative z-10">{platform.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+              {/* Platforms Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center px-3 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <span className="text-sm font-medium mr-2">Platform:</span>
+                  <span className="text-sm text-gray-700">{selectedPlatformLabel}</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>Select Platform</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {platforms.map((platform) => (
+                    <DropdownMenuItem 
+                      key={platform.value}
+                      onClick={() => onPlatformChange(platform.value)}
+                      className={selectedPlatform === platform.value ? "bg-gray-100" : ""}
+                    >
+                      {platform.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-          <div className="mb-8">
-            <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-              <Globe className="w-4 h-4 mr-2" />
-              Regions
-            </h3>
-            <div className="flex flex-wrap gap-3">
-              {regions.map((region) => {
-                const isSelected = selectedRegion === region.value;
-                return (
-                  <button
-                    key={region.value}
-                    onClick={() => onRegionChange(region.value)}
-                    className={`category-chip relative overflow-hidden ${
-                      isSelected
-                        ? 'bg-google-green text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="regionHighlight"
-                        className="absolute inset-0 bg-google-green"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    )}
-                    <span className="relative z-10">{region.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+              {/* Regions Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center px-3 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <Globe className="w-3.5 h-3.5 mr-1.5" />
+                  <span className="text-sm font-medium mr-2">Region:</span>
+                  <span className="text-sm text-gray-700">{selectedRegionLabel}</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>Select Region</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {regions.map((region) => (
+                    <DropdownMenuItem 
+                      key={region.value}
+                      onClick={() => onRegionChange(region.value)}
+                      className={selectedRegion === region.value ? "bg-gray-100" : ""}
+                    >
+                      {region.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-          <div>
-            <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-              <MapPin className="w-4 h-4 mr-2" />
-              Countries
-            </h3>
-            
-            <div className="relative">
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                className="w-full max-w-5xl"
-              >
-                <CarouselContent>
-                  {countries.map((country) => {
-                    const isSelected = selectedCountry === country.value;
-                    return (
-                      <CarouselItem key={country.value} className="basis-auto">
-                        <button
-                          onClick={() => onCountryChange(country.value)}
-                          className={`category-chip relative overflow-hidden ${
-                            isSelected
-                              ? 'bg-google-red text-white'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
-                        >
-                          {isSelected && (
-                            <motion.span
-                              layoutId="countryHighlight"
-                              className="absolute inset-0 bg-google-red"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 0.3 }}
-                            />
-                          )}
-                          <span className="relative z-10">{country.label}</span>
-                        </button>
-                      </CarouselItem>
-                    );
-                  })}
-                </CarouselContent>
-                <div className="flex justify-end mt-2">
-                  <CarouselPrevious className="relative static left-auto right-auto translate-y-0 mr-2" />
-                  <CarouselNext className="relative static left-auto right-auto translate-y-0" />
-                </div>
-              </Carousel>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-sm text-gray-500">
-                Swipe to see more countries or use the navigation buttons
-              </p>
+              {/* Countries Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center px-3 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                  <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                  <span className="text-sm font-medium mr-2">Country:</span>
+                  <span className="text-sm text-gray-700">{selectedCountryLabel}</span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56 max-h-[300px] overflow-auto">
+                  <DropdownMenuLabel>Select Country</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {countries.map((country) => (
+                    <DropdownMenuItem 
+                      key={country.value}
+                      onClick={() => onCountryChange(country.value)}
+                      className={selectedCountry === country.value ? "bg-gray-100" : ""}
+                    >
+                      {country.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
