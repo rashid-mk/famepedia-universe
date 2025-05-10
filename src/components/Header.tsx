@@ -1,16 +1,18 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X, Search, LogIn } from 'lucide-react';
+import { Menu, X, Search, LogIn, LogOut, User as UserIcon } from 'lucide-react';
 import SearchDialog from './SearchDialog';
 import { people } from '@/data/people';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +24,14 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleAuthAction = () => {
+    if (user) {
+      signOut();
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <header 
@@ -59,26 +69,53 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Login Button */}
+          {/* Auth Button */}
           <div className="relative">
-            <button 
-              className="flex items-center space-x-1 px-6 py-2 bg-google-blue text-white rounded-full text-sm font-medium hover:bg-blue-600 transition-all duration-200"
-              onClick={() => setIsAuthOpen(!isAuthOpen)}
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Login</span>
-            </button>
+            {user ? (
+              <button 
+                className="flex items-center space-x-1 px-6 py-2 bg-google-blue text-white rounded-full text-sm font-medium hover:bg-blue-600 transition-all duration-200"
+                onClick={() => setIsAuthOpen(!isAuthOpen)}
+              >
+                <UserIcon className="w-4 h-4" />
+                <span>My Account</span>
+              </button>
+            ) : (
+              <button 
+                className="flex items-center space-x-1 px-6 py-2 bg-google-blue text-white rounded-full text-sm font-medium hover:bg-blue-600 transition-all duration-200"
+                onClick={() => setIsAuthOpen(!isAuthOpen)}
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Login</span>
+              </button>
+            )}
             
             {/* Auth Dropdown */}
             {isAuthOpen && (
               <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-50 animate-fadeIn">
                 <div className="py-2">
-                  <Link to="/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-google-light-blue hover:text-google-blue transition-colors" onClick={() => setIsAuthOpen(false)}>
-                    Login
-                  </Link>
-                  <Link to="/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-google-light-blue hover:text-google-blue transition-colors" onClick={() => setIsAuthOpen(false)}>
-                    Sign Up
-                  </Link>
+                  {user ? (
+                    <>
+                      <div className="px-4 py-2 border-b">
+                        <p className="font-medium text-sm">{user.email}</p>
+                      </div>
+                      <button 
+                        onClick={() => { setIsAuthOpen(false); signOut(); }}
+                        className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-google-light-blue hover:text-google-blue transition-colors" onClick={() => setIsAuthOpen(false)}>
+                        Login
+                      </Link>
+                      <Link to="/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-google-light-blue hover:text-google-blue transition-colors" onClick={() => setIsAuthOpen(false)}>
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -117,14 +154,31 @@ const Header = () => {
               <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             </div>
             
-            {/* Login and Signup buttons for mobile */}
+            {/* Auth buttons for mobile */}
             <div className="flex flex-col space-y-2 mt-2">
-              <Link to="/login" className="py-3 px-4 bg-google-blue text-white rounded-full text-center font-medium hover:bg-blue-600 transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
-                Login
-              </Link>
-              <Link to="/signup" className="py-3 px-4 bg-white border border-google-blue text-google-blue rounded-full text-center font-medium hover:bg-google-light-blue transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
-                Sign Up
-              </Link>
+              {user ? (
+                <>
+                  <div className="py-2 px-4 bg-gray-100 rounded-md">
+                    <p className="font-medium">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={() => { setIsMenuOpen(false); signOut(); }}
+                    className="py-3 px-4 bg-red-600 text-white rounded-full text-center font-medium hover:bg-red-700 transition-all duration-200 flex items-center justify-center"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="py-3 px-4 bg-google-blue text-white rounded-full text-center font-medium hover:bg-blue-600 transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+                    Login
+                  </Link>
+                  <Link to="/signup" className="py-3 px-4 bg-white border border-google-blue text-google-blue rounded-full text-center font-medium hover:bg-google-light-blue transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
