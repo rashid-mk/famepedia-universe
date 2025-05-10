@@ -9,7 +9,111 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      influencers: {
+        Row: {
+          category: string
+          country: string | null
+          description: string | null
+          followers: number
+          handle: string
+          id: string
+          image_url: string | null
+          last_updated: string
+          name: string
+          platform: string
+          rank: number | null
+          region: string | null
+        }
+        Insert: {
+          category: string
+          country?: string | null
+          description?: string | null
+          followers?: number
+          handle: string
+          id?: string
+          image_url?: string | null
+          last_updated?: string
+          name: string
+          platform: string
+          rank?: number | null
+          region?: string | null
+        }
+        Update: {
+          category?: string
+          country?: string | null
+          description?: string | null
+          followers?: number
+          handle?: string
+          id?: string
+          image_url?: string | null
+          last_updated?: string
+          name?: string
+          platform?: string
+          rank?: number | null
+          region?: string | null
+        }
+        Relationships: []
+      }
+      platform_credentials: {
+        Row: {
+          access_token: string | null
+          access_token_secret: string | null
+          api_key: string | null
+          api_secret: string | null
+          created_at: string
+          id: string
+          platform: string
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          access_token_secret?: string | null
+          api_key?: string | null
+          api_secret?: string | null
+          created_at?: string
+          id?: string
+          platform: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          access_token_secret?: string | null
+          api_key?: string | null
+          api_secret?: string | null
+          created_at?: string
+          id?: string
+          platform?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

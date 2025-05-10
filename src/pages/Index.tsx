@@ -1,12 +1,15 @@
 
 import { useState, useEffect } from 'react';
-import { Category, Platform, Country, Region, people } from '@/data/people';
+import { Category, Platform, Country, Region, people as staticPeople } from '@/data/people';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import CategoryFilter from '@/components/CategoryFilter';
 import PersonGrid from '@/components/PersonGrid';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
@@ -14,15 +17,77 @@ const Index = () => {
   const [selectedCountry, setSelectedCountry] = useState<Country>('all');
   const [selectedRegion, setSelectedRegion] = useState<Region>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Simulate initial loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    // Check if we have data in the database
+    const checkData = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('influencers')
+          .select('*', { count: 'exact', head: true });
+        
+        // If no data or error, initialize the database with our static data
+        if (error || (count !== null && count === 0)) {
+          if (user) {
+            // Only initialize if user is logged in
+            await initializeData();
+          }
+        }
+      } catch (err) {
+        console.error('Error checking database:', err);
+      }
+      
+      // Simulate initial loading regardless
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1500);
+    };
+    
+    checkData();
+  }, [user]);
 
-    return () => clearTimeout(timer);
-  }, []);
+  // Initialize database with static data if empty
+  const initializeData = async () => {
+    try {
+      // Convert static people data to the format expected by our database
+      const influencers = staticPeople.map((person, index) => ({
+        name: person.name,
+        handle: person.handle,
+        followers: person.followers,
+        image_url: person.imageUrl,
+        category: person.category,
+        platform: person.platform,
+        country: person.country,
+        region: person.region,
+        description: person.description,
+        rank: index + 1,
+        last_updated: new Date().toISOString()
+      }));
+      
+      // Insert the data
+      const { error } = await supabase
+        .from('influencers')
+        .upsert(influencers);
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast({
+        title: "Data initialized",
+        description: "Initial influencer data has been loaded into the database.",
+      });
+    } catch (err) {
+      console.error('Error initializing data:', err);
+      toast({
+        title: "Initialization failed",
+        description: "Could not load initial data into the database.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleCategoryChange = (category: Category) => {
     setSelectedCategory(category);
@@ -93,7 +158,7 @@ const Index = () => {
           transition={{ delay: 0.4, duration: 0.5 }}
         >
           <PersonGrid
-            people={people}
+            people={staticPeople}
             selectedCategory={selectedCategory}
             selectedPlatform={selectedPlatform}
             selectedCountry={selectedCountry}
