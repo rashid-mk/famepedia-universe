@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Category, Platform, Country, Region, people as staticPeople } from '@/data/people';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +9,7 @@ import Footer from '@/components/Footer';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
@@ -17,6 +17,7 @@ const Index = () => {
   const [selectedCountry, setSelectedCountry] = useState<Country>('all');
   const [selectedRegion, setSelectedRegion] = useState<Region>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdatingYouTube, setIsUpdatingYouTube] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -89,6 +90,43 @@ const Index = () => {
     }
   };
 
+  // Function to update YouTube data specifically
+  const updateYouTubeData = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to update YouTube data.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsUpdatingYouTube(true);
+    try {
+      const { error } = await supabase.functions.invoke('youtube-api');
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast({
+        title: "YouTube data update triggered",
+        description: "The system is fetching fresh data from YouTube.",
+      });
+      
+      // The data will automatically update via realtime subscription
+    } catch (error) {
+      console.error('Error updating YouTube data:', error);
+      toast({
+        title: "YouTube update failed",
+        description: "Could not refresh YouTube influencer data. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingYouTube(false);
+    }
+  };
+
   const handleCategoryChange = (category: Category) => {
     setSelectedCategory(category);
   };
@@ -139,7 +177,26 @@ const Index = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
+          className="max-w-7xl mx-auto px-4 py-6"
         >
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold mb-4 md:mb-0">Social Media Influencers</h2>
+            
+            <div className="flex space-x-3">
+              <Button
+                onClick={updateYouTubeData}
+                disabled={isUpdatingYouTube}
+                className={`px-4 py-2 rounded-full text-white font-medium transition-all ${
+                  isUpdatingYouTube 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-red-600 hover:bg-red-700'
+                }`}
+              >
+                {isUpdatingYouTube ? 'Updating YouTube...' : 'Update YouTube Data'}
+              </Button>
+            </div>
+          </div>
+          
           <CategoryFilter
             selectedCategory={selectedCategory}
             selectedPlatform={selectedPlatform}

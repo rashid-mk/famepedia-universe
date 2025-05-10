@@ -1,14 +1,13 @@
-
 export interface Person {
-  id: number;
+  id: string;
   name: string;
   handle: string;
   followers: number;
   imageUrl: string;
-  category: 'entertainment' | 'sports' | 'business' | 'politics' | 'technology';
-  platform: 'instagram' | 'twitter' | 'youtube' | 'tiktok' | 'facebook';
-  country: string;
-  region: string;
+  category: Category;
+  platform: Platform;
+  country: Country;
+  region: Region;
   description: string;
 }
 

@@ -55,9 +55,9 @@ const PersonGrid = ({
       }
       
       if (data) {
-        // Convert Supabase data to our Person type
+        // Convert Supabase data to our Person type - fixing the type error by ensuring id is a string
         const convertedData: Person[] = data.map((influencer: Influencer) => ({
-          id: influencer.id,
+          id: influencer.id,  // The Person type now accepts string IDs
           name: influencer.name,
           handle: influencer.handle,
           followers: influencer.followers,

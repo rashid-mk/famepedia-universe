@@ -124,15 +124,25 @@ async function updateAllPlatforms(supabase: any) {
       const api = platformAPIs[platform]
       const influencers = await api.fetchTopInfluencers()
       
-      // Batch insert/update influencers
+      // First, delete existing entries for this platform
+      const { error: deleteError } = await supabase
+        .from('influencers')
+        .delete()
+        .eq('platform', platform)
+      
+      if (deleteError) {
+        console.error(`Error deleting ${platform} influencers:`, deleteError)
+        continue
+      }
+      
+      // Then insert new entries
       const { error } = await supabase
         .from('influencers')
-        .upsert(
+        .insert(
           influencers.map(inf => ({ 
             ...inf, 
             last_updated: new Date().toISOString() 
-          })),
-          { onConflict: 'platform,handle' }
+          }))
         )
       
       if (error) {
